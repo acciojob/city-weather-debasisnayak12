@@ -9,44 +9,20 @@ const App = () => {
   const [weatherData,setWeatherData] = useState(null);
   const [error,setError] = useState(null);
 
-   const handleInputChange = async (e) => {
-    const inputValue = e.target.value;
-    setQuery(inputValue);
-    try{
-        const res = await axios.get(
-          `https://api.openweathermap.org/data/2.5/weather?q=${inputValue}&appid=${API_KEY}`
-        );
-        const fahrenheitTemp = (res.data.main.temp - 273.15) * 9/5 + 32;
-        res.data.main.temp = fahrenheitTemp.toFixed(2);
+   const handleSearch = async (e) => {
+     try {
+       const res = await axios.get(
+         `https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${API_KEY}`
+       );
+       const fahrenheitTemp = ((res.data.main.temp - 273.15) * 9) / 5 + 32;
+       res.data.main.temp = fahrenheitTemp.toFixed(2);
        setWeatherData(res.data);
        setError(null);
-      //  setQuery("");
-    }
-    catch(error){
-      setError("city not found");
-      setWeatherData(null);
-    }
-    // fetch(
-    //   `https://api.openweathermap.org/data/2.5/weather?q=${inputValue}&appid=${API_KEY}`
-    // )
-    // .then((res) => {
-    //   if(!res.ok){
-    //     throw new Error("City not found");
-    //   }
-    //   return res.json();
-    // })
-    // .then((data) => {
-    //   const fahrenheitTemp = (data.main.temp - 273.15) * 9/5 + 32;
-    //    data.main.temp = fahrenheitTemp.toFixed(2);
-    //   setWeatherData(data);
-    //   setError(null);
-    //   setQuery("");
-    // })
-    // .catch((error) => {
-    //   setError("City not found");
-    //   setWeatherData(null);
-    // });
-     
+       setQuery("");
+     } catch (error) {
+       setError("city not found");
+       setWeatherData(null);
+     }
    };
 
   return (
@@ -54,11 +30,12 @@ const App = () => {
       <div>
         <input
           className="search"
-          onChange={handleInputChange}
+          onChange={(e)=>setQuery(e.target.value)}
           value={query}
           type="text"
           placeholder="Enter a city"
         />
+        <button onClick={handleSearch}>Search</button>
       </div>
       <div className="weather">
         {weatherData ? (
