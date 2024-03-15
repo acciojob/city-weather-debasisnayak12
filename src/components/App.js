@@ -9,33 +9,35 @@ const App = () => {
   const [weatherData,setWeatherData] = useState(null);
   const [error,setError] = useState(null);
 
-   const handleSearch = async (e) => {
-     try {
-       const res = await axios.get(
-         `https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${API_KEY}`
-       );
-       const fahrenheitTemp = ((res.data.main.temp - 273.15) * 9) / 5 + 32;
-       res.data.main.temp = fahrenheitTemp.toFixed(2);
+   const handleInputChange = async (e) => {
+    const inputValue = e.target.value;
+    setQuery(inputValue);
+    try{
+        const res = await axios.get(
+          `https://api.openweathermap.org/data/2.5/weather?q=${inputValue}&appid=${API_KEY}`
+        );
+        const fahrenheitTemp = (res.data.main.temp - 273.15) * 9/5 + 32;
+        res.data.main.temp = fahrenheitTemp.toFixed(2);
        setWeatherData(res.data);
        setError(null);
        setQuery("");
-     } catch (error) {
-       setError("city not found");
-       setWeatherData(null);
-     }
-   };
+    }
+    catch(error){
+      setError("city not found");
+      setWeatherData(null);
+    }
+};
 
   return (
     <div>
       <div>
         <input
           className="search"
-          onChange={(e)=>setQuery(e.target.value)}
+          onChange={handleInputChange}
           value={query}
           type="text"
           placeholder="Enter a city"
         />
-        <button onClick={handleSearch}>Search</button>
       </div>
       <div className="weather">
         {weatherData ? (
